@@ -8,7 +8,7 @@
 
 * Using `cv2.calibrateCamera` function in `openCV` to get the necessary values for calibration.
 
-Using the values ``ret``, ``mtx`` and ``dist`` and the function ``cv2.undistort`` to get the undistorted image. The result is showed below.
+Used the values ``ret``, ``mtx`` and ``dist`` and the function ``cv2.undistort`` to get the undistorted image. The result is shown below.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/calibrationCamera.png" alt="camera calibration" width="888">
 
@@ -16,40 +16,39 @@ Using the values ``ret``, ``mtx`` and ``dist`` and the function ``cv2.undistort`
 
 ### 1. Image Undistortion
 
-The values ``ret``, ``mtx`` and ``dist`` are calculated from the section above. Using these values
-and the function ``cv2.undistort`` to get the undistorted image. The result is showed below.
+The values ``ret``, ``mtx`` and ``dist`` were calculated from the section above. Used these values and the function ``cv2.undistort`` to get the undistorted image. The result is shown below.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/calibration.png" alt="undistort" width="888">
 
 ### 2. Image Processing
 
-The image was first converted into `HLS` format and in `L` and `S` channels appropriate thresholdeds should be defined to extract infromations from the lines. The result is below.
+The image was first converted into `HLS` format and in `L` and `S` channels appropriate thresholds should be defined to extract information from the lines. The result is shown below.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/imgProcessing.png" alt="img processing" width="888">
 
 ### 3. Image Warping
 
-The vertices as destination were simply defined as the four vertices in the corners of the image. The image was then warped from perspective view to birds-eye view. The Result is below.
+The vertices of the destination were simply defined as the four vertices in the corners of the image. The image was then warped from perspective view to birds-eye view. The Result is shown below.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/imgWarping.png" alt="img warping" width="888">
 
 ### 4. Lines Finding through Windows
 
-	(1) From the bottom several lines of the picture, it would be calculated, at which two positions the white points were the most. These two positions would be considered as start positions of the two polynomials.
+#### (1) From the bottom several lines of the picture, it would be calculated, at which two positions the white points were the most. These two positions would be considered as start positions of the two polynomials.
 
-	(2) From the bottom up, small windows would be generated to detect where the most white points were.
-	
-	(3) All the points captured by the windows were collected. And through those points two polynomials were generated.
+#### (2) From the bottom up, small windows would be generated to detect where the white points were most.
+    
+#### (3) All the points captured by the windows were collected. And through those points, two polynomials were generated.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/windows.png" alt="windows" width="888">
 
 ### 5. Lines Finding through Previous Valid Polynomials
 
-	(1) According to previous polynomials two sections (through offsets of the polynomials) were generated.
+#### (1) According to previous polynomials, two sections (through offsets of the polynomials) were generated.
 
-	(2) Inside these two sections the white points were detected.
+#### (2) Inside these two sections, the white points were detected.
 
-	(3) Through those captured points two new polynomials were generated.
+#### (3) Through those captured points two new polynomials were generated.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/poly.png" alt="poly" width="888">
 
@@ -59,23 +58,23 @@ The vertices as destination were simply defined as the four vertices in the corn
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/radiusCurvature.png" alt="radius curvature" width="388">
 
-* It was assumed that the middle of the picture was the center of the vehicle, so that the offset of the vehicle could be calculated approximately according to the detected polymonials.
+* It was assumed that the middle of the picture was the center of the vehicle so that the offset of the car was able to be calculated approximately according to the detected polynomials.
 
 ### 7. Images Merging
 
-To notice that, the warped image muss firstly converted to perspective image then the two images can be merged.
+To notice that, the warped image must be firstly converted to the perspective image then the two images could be merged.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/backWarping.png" alt="merge" width="888">
 
 ## Pipeline (video)
 
-### 1. I definded a class called ``Line`` to store the information about the polynomials and do some changes to the stored data.
+### 1. I defined a class called ``Line`` to store the information about the polynomials and do some changes to the stored data.
 
-The class ``Line`` has the main functions below.
+The class ``Line`` has the primary functions below.
 
-* ``calc_error`` calculate the error to test, if two lines are accepted to be parallel.
+* ``calc_error`` calculates the error to test, if two lines are accepted to be parallel.
 
-* ``smooth_poly`` update the values polynomials of this line(object) in comparision with another line(object). The new polynomials will be calculated as below.
+* ``smooth_poly`` updates the values polynomials of this line(object) in comparison with another line(object). The new polynomials would be calculated as below.
 
 ```
 poly_updated = (poly_previous + poly_current) * 0.5
@@ -84,9 +83,9 @@ poly_updated = (poly_previous + poly_current) * 0.5
 This function can smooth the lanes detection between frames.
 
 ### 2. I defined a class called ``Organizer`` to control the whole video processing.
-The ``organizer`` has a function ``process_img``. This function control the every image processing. When the ``organizer`` find that the detected lines are not accepted it will take the polynomial from the previous valid frame. The previous valid polynomials is saved in the ``organizer``.
+The ``organizer`` has a function ``process_img``. This function controls the every image processing. When the ``organizer`` found that the detected lines were not accepted, it would take the polynomial from the previous valid frame. The previous valid polynomials were saved in the ``organizer``.
 
-A test result is below.
+A test result is shown below.
 
 <img src="https://filedn.com/lUE8ye7yWpzFOF1OFLVsPau/Github/laneLines_advanced/prepVideo.png" alt="test img" width="888">
 
@@ -102,15 +101,14 @@ A screenshot is below.
 
 ### 1. Parameter Tuning
 
-* The thresholds for the image processing to detect important points are important to be tuned, so that the algorithm will be robuster.
-A robust image processing algorithm need to be found because the algorithm above works well with little noise. This meas, that it works not very well for example, when the lane has strong shadows.
+* The thresholds for the image processing to detect crucial points are essential to be tuned so that the algorithm will be more robust.
+A robust image processing algorithm needs to be found because the algorithm above works well with little noise. This means, that it works not very well for example when the lane has strong shadows.
 
-* The choise of the vanish point is important, bacause it decides whether the lines will be parallel in the birds-eye view.
+* The choice of the vanishing point is essential because it decides whether the lines will be parallel in the birds-eye view.
 
 ### 2. Sequence of the Processing is also important
 
-For example, the image should be converted to binary image before it is warped to birds-eye view, because in the birds-eye view the pixels above will be blurred, 
-so that the image processing works worse than that the unwarped image will be processed.
+For example, the image should be converted to the binary image before it is warped to birds-eye view because in the birds-eye view the pixels above will be blurred, so that the image processing works worse than that the unwarped image will be processed.
 
 ## References
 
